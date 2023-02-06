@@ -1,12 +1,12 @@
-import asyncio
-
 from cryptography.fernet import Fernet, InvalidToken
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message
-from utils import TelegramClient
+
+from utils import TelegramClient, AntiSpam
 
 
 @Client.on_callback_query(filters.regex("^protector$"))
+@AntiSpam
 async def protector(self: TelegramClient, query: CallbackQuery):
     text: str = f"<b>🏘 Home » 🛡 Protector</b>\n\nYou can use this menu to protect your files with an ecryption key"
     user_id: int = query.from_user.id
@@ -33,6 +33,7 @@ async def protector(self: TelegramClient, query: CallbackQuery):
 
 
 @Client.on_callback_query(filters.regex("^protector."))
+@AntiSpam
 async def protector_data(self: TelegramClient, query: CallbackQuery):
     _, category = query.data.split(".")
     user_id: int = query.from_user.id
@@ -95,6 +96,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
 
 
 @Client.on_message(filters.private, group=10)
+@AntiSpam
 async def wait_private_key(self: TelegramClient, message: Message):
     user_id: int = message.from_user.id
 

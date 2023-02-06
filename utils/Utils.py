@@ -1,7 +1,6 @@
 import json
 from io import BytesIO
 
-import aiofiles
 from cryptography.fernet import Fernet
 
 

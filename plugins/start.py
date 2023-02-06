@@ -1,6 +1,8 @@
 from typing import Union
+
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+
 from utils import TelegramClient
 
 
@@ -13,7 +15,8 @@ async def start(self: TelegramClient, message: Union[Message, CallbackQuery]):
 
     buttons: list = [
         [
-            InlineKeyboardButton("🛡 Protector", callback_data="protector")
+            InlineKeyboardButton("🛡 Protector", callback_data="protector"),
+            InlineKeyboardButton("📊 Server stats", callback_data="server_status")
         ],
         [
             InlineKeyboardButton("👨‍💻 Developer", url="https://t.me/razvyyh")
@@ -24,7 +27,7 @@ async def start(self: TelegramClient, message: Union[Message, CallbackQuery]):
         await message.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons), disable_web_page_preview=True)
         await self.update_last_message(message)
     else:
-        bot_msg: Message = await self.send_message(chat_id=message.chat.id, text=text,
+        bot_msg: Message = await self.send_message(chat_id=user_id, text=text,
                                                    reply_markup=InlineKeyboardMarkup(buttons),
                                                    disable_web_page_preview=True)
         await self.update_last_message(bot_msg)
