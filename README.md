@@ -5,11 +5,11 @@ This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a
 ## 📝〢 Features
 
 - File encryption/decryption.
+- AntiSpam decorator to prevent spam.
 
 ## 🎯〢 Future features
 
 - Chat to speak with Bot owner.
-- A module to avoid FloodWait errors.
 - Docker support.
 - Logs and more!
 
