@@ -1,4 +1,5 @@
 import json
+import os
 from io import BytesIO
 
 from cryptography.fernet import Fernet
@@ -8,12 +9,15 @@ class Utils:
     def __init__(self, version: str):
         self.version = version
 
-    def create_settings(self) -> None:
+    def initialize(self) -> None:
         """
         Check if settings.json exists if it does not exist it
         creates it create settings.json file.
         :return:
         """
+        if not os.path.exists('sessions'):
+            os.makedirs('sessions')
+
         try:
             with open('settings.json', 'r') as f:
                 f.read()
