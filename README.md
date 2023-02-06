@@ -10,6 +10,7 @@ This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a
 ## 🎯〢 Future features
 
 - Chat to speak with Bot owner.
+- Server stats like cpu, ram, memory, etc.
 - Docker support.
 - Logs and more!
 
