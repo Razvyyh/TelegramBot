@@ -9,6 +9,7 @@ from utils import TelegramClient
 @Client.on_callback_query(filters.regex("^protector$"))
 async def protector(self: TelegramClient, query: CallbackQuery):
     text: str = f"<b>🏘 Home » 🛡 Protector</b>\n\nYou can use this menu to protect your files with an ecryption key"
+    user_id: int = query.from_user.id
 
     buttons: list = [
         [
@@ -25,6 +26,10 @@ async def protector(self: TelegramClient, query: CallbackQuery):
 
     await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons), disable_web_page_preview=True)
     await self.update_last_message(query)
+
+    if user_id in self.waits["encrypt_file"]: self.waits["encrypt_file"].remove(user_id)
+    if user_id in self.waits["decrypt_file"]: self.waits["decrypt_file"].remove(user_id)
+    if user_id in self.waits["private_key"]: self.waits["private_key"].remove(user_id)
 
 
 @Client.on_callback_query(filters.regex("^protector."))
@@ -122,6 +127,7 @@ async def wait_private_key(self: TelegramClient, message: Message):
         await message.delete()
 
         private_key: str = await self.mysql.get_private_key(user_id)
+
         try:
             memory_file = await self.download_media(message=message, in_memory=True)
         except ValueError:
