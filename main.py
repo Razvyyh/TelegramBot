@@ -7,7 +7,7 @@ from utils import TelegramClient, Utils, MySQLClient
 class Main:
     def __init__(self):
         self.utils = Utils(version="1.0.0")
-        self.utils.create_settings()
+        self.utils.initialize()
 
         self.mysql = MySQLClient()
         self.telegram = TelegramClient(mysql=self.mysql, utils=self.utils)
