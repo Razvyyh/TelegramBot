@@ -1,13 +1,12 @@
 import contextlib
 import json
-from typing import Union
-
 import pyrogram
+
+from typing import Union
 from pyrogram import Client
 from pyrogram.enums import ParseMode
 from pyrogram.errors import MessageIdInvalid
 from pyrogram.types import InlineKeyboardMarkup, CallbackQuery, Message
-
 from utils.MySQL import PollNotFound
 
 
@@ -29,8 +28,7 @@ class TelegramClient(Client):
         self.waits: dict = {
             "private_key": [],
             "encrypt_file": [],
-            "decrypt_file": [],
-            "server_stats": []
+            "decrypt_file": []
         }
 
         super().__init__(
