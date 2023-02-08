@@ -6,10 +6,14 @@
 
 This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a Python API for creating bots on Telegram. With this bot, users can send messages, view the latest news, and get weather information. Its user-friendly interface and simplicity in use make it a great solution for those looking for a simple and easy-to-use bot.
 
+###
+
 ## 📝〢 Features
 
 - File encryption/decryption.
 - AntiSpam decorator to prevent spam.
+
+###
 
 ## 🎯〢 Future features
 
@@ -18,10 +22,14 @@ This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a
 - Docker support.
 - Logs and more!
 
+###
+
 ## ➕〢 Extension of functionality
 Because of its modular architecture, you can easily extend the bot's functionality to meet your specific needs. New functionality can be created by adding new modules to the source code.
 
 ## 💫〢 Deployment
+
+###
 
 ### Pre-requiments 
 - Python 3.11 (recommended)
@@ -53,8 +61,12 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
+###
+
 ## ❤️〢 Contributing
 This bot is an open source project and everyone is invited to contribute to its development. If you are interested in contributing, please open a pull request with your changes.
+
+###
 
 ## 🪧〢 License
 This bot is released under the MIT license. For more information, see the LICENSE file.
