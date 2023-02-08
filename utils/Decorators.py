@@ -1,10 +1,10 @@
 import asyncio
 import contextlib
+
 from datetime import datetime
 from functools import wraps
 from typing import Callable
 from typing import Union
-
 from cachetools import TTLCache
 from pyrate_limiter import (BucketFullException, Duration, Limiter,
                             MemoryListBucket, RequestRate)
@@ -23,7 +23,6 @@ class RateLimiter:
     def __init__(self) -> None:
         # 1 requests per seconds
         self.second_rate = RequestRate(2, Duration.SECOND)
-        self.suca = RequestRate(5, Duration.DAY)
 
         self.limiter = Limiter(
             self.second_rate,
@@ -65,10 +64,8 @@ def AntiSpam(func: Callable) -> Callable:
             if (datetime.now() - blacklist[user_id]).seconds >= seconds_to_blacklist:
                 blacklist.pop(user_id)
                 warns.pop(user_id)
-                print("User has been removed from blacklist")
 
             else:
-                print("User is still blacklisted")
                 return
 
         if is_limited:
