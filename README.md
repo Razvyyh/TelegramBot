@@ -1,4 +1,8 @@
-<h1 align="center">Telegram Bot</h1>
+<div align="center">
+  <a href="https://razvyyh.com">
+    <img src="https://i.imgur.com/BSz5kIq.png" alt="Telegram Bot">
+  </a>
+</div>
 
 This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a Python API for creating bots on Telegram. With this bot, users can send messages, view the latest news, and get weather information. Its user-friendly interface and simplicity in use make it a great solution for those looking for a simple and easy-to-use bot.
 
