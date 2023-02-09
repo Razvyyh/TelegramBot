@@ -1,7 +1,8 @@
+from io import BytesIO
+
 from cryptography.fernet import Fernet, InvalidToken
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message
-
 from utils import TelegramClient, AntiSpam
 
 
@@ -73,7 +74,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
 
     elif category == "generate":
         await query.answer("🔄 | Generating a new key...")
-        key = Fernet.generate_key().decode()
+        key: str = Fernet.generate_key().decode()
         await self.mysql.set_private_key(user_id, key)
 
         query.data = "protector.my_key"
@@ -143,10 +144,10 @@ async def wait_private_key(self: TelegramClient, message: Message):
                 ]
             )
 
-        encrypted_file = await self.utils.encrypt_file(key=private_key, memory_file=memory_file)
+        encrypted_file: BytesIO = await self.utils.encrypt_file(key=private_key, memory_file=memory_file)
 
         await self.send_document(chat_id=user_id, document=encrypted_file, file_name=message.document.file_name,
-                                 caption="🔐 | Encrypted file")
+                                 caption=f"🔐 | File encrypted by {self.me.mention}")
 
         return self.waits["encrypt_file"].remove(user_id)
 
@@ -156,8 +157,8 @@ async def wait_private_key(self: TelegramClient, message: Message):
         private_key: str = await self.mysql.get_private_key(user_id)
 
         try:
-            memory_file = await self.download_media(message, in_memory=True)
-            decrypted_file = await self.utils.decrypt_file(key=private_key, memory_file=memory_file)
+            memory_file: str = await self.download_media(message, in_memory=True)
+            decrypted_file: BytesIO = await self.utils.decrypt_file(key=private_key, memory_file=memory_file)
         except InvalidToken:
             return await self.callback_edit(
                 user_id=user_id,
@@ -180,6 +181,6 @@ async def wait_private_key(self: TelegramClient, message: Message):
             )
 
         await self.send_document(chat_id=user_id, document=decrypted_file, file_name=message.document.file_name,
-                                 caption="🔓 | Decrypted file")
+                                 caption=f"🔓 | File decrypted by {self.me.mention}.")
 
         return self.waits["decrypt_file"].remove(user_id)

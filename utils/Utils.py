@@ -1,13 +1,13 @@
 import json
 import os
-from io import BytesIO
 
+from io import BytesIO
 from cryptography.fernet import Fernet
 
 
 class Utils:
     def __init__(self, version: str):
-        self.version = version
+        self.version: str = version
 
     def initialize(self) -> None:
         """
@@ -50,7 +50,7 @@ class Utils:
         import secrets
         import string
 
-        alphabet = string.ascii_letters + string.digits
+        alphabet: str = string.ascii_letters + string.digits
         if special_chars:
             alphabet += string.punctuation
         return ''.join(secrets.choice(alphabet) for _ in range(length))
@@ -62,9 +62,9 @@ class Utils:
         :param memory_file:
         :return: file_encrypted
         """
-        fernet = Fernet(key)
+        fernet: Fernet = Fernet(key)
         memory_file.seek(0)
-        file_encrypted = fernet.encrypt(memory_file.read())
+        file_encrypted: bytes = fernet.encrypt(memory_file.read())
         memory_file.close()
         return BytesIO(file_encrypted)
 
@@ -75,8 +75,8 @@ class Utils:
         :param memory_file:
         :return: file_decrypted
         """
-        fernet = Fernet(key)
+        fernet: Fernet = Fernet(key)
         memory_file.seek(0)
-        file_decrypted = fernet.decrypt(memory_file.read())
+        file_decrypted: bytes = fernet.decrypt(memory_file.read())
         memory_file.close()
         return BytesIO(file_decrypted)

@@ -8,6 +8,7 @@ from typing import Union
 from cachetools import TTLCache
 from pyrate_limiter import (BucketFullException, Duration, Limiter,
                             MemoryListBucket, RequestRate)
+
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, Message
 
@@ -25,7 +26,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         # 1 requests per seconds
-        self.second_rate: RequestRate = RequestRate(1, Duration.SECOND)
+        self.second_rate: RequestRate = RequestRate(2, Duration.SECOND)
 
         self.limiter: Limiter = Limiter(
             self.second_rate,

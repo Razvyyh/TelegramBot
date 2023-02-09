@@ -6,14 +6,14 @@ import pymysql
 from aiomysql import Pool
 
 
-class PollNotFound(Exception):
+class PoolNotFound(Exception):
     """ Raise error when pool is not started yet or not initializated"""
     pass
 
 
 class MySQLClient:
     def __init__(self):
-        self.settings = json.loads(open("settings.json", encoding="UTF-8").read())
+        self.settings: dict = json.loads(open("settings.json", encoding="UTF-8").read())
 
         self.host: str = self.settings.get("mysql", {}).get("host", "0.0.0.0")
         self.port: int = self.settings.get("mysql", {}).get("port", 3306)
@@ -42,7 +42,7 @@ class MySQLClient:
     async def start(self):
         """ Run on startup """
 
-        tables = [table[0] for table in await self.exec("SHOW TABLES")]
+        tables: list = [table[0] for table in await self.exec("SHOW TABLES")]
 
         if 'users' not in tables:
             await self.exec(
@@ -61,13 +61,13 @@ class MySQLClient:
         :return: True if user exists, False if not
         """
         if not self.pool:
-            raise PollNotFound("Pool not found")
+            raise PoolNotFound("Pool not found")
 
-        check = await self.exec("SELECT * FROM users WHERE user_id = %s", user_id)
+        check: bool = await self.exec("SELECT * FROM users WHERE user_id = %s", user_id)
         if not check:
             await self.exec("INSERT INTO users(user_id) VALUES(%s)", user_id)
 
-        return bool(check)
+        return check
 
     async def get_private_key(self, user_id: int):
         """
@@ -76,9 +76,9 @@ class MySQLClient:
         :return: Private key
         """
         if not self.pool:
-            raise PollNotFound("Pool not found")
+            raise PoolNotFound("Pool not found")
 
-        key = await self.exec("SELECT private_key FROM users WHERE user_id = %s", user_id)
+        key: list = await self.exec("SELECT private_key FROM users WHERE user_id = %s", user_id)
 
         try:
             return key[0][0]
@@ -94,7 +94,7 @@ class MySQLClient:
         """
 
         if not self.pool:
-            raise PollNotFound("Pool not found")
+            raise PoolNotFound("Pool not found")
 
         await self.exec("UPDATE users SET private_key = %s WHERE user_id = %s", (private_key, user_id))
 
@@ -102,7 +102,7 @@ class MySQLClient:
         """ Execute queries """
 
         if not self.pool:
-            raise PollNotFound("Pool not found")
+            raise PoolNotFound("Pool not found")
 
         async with self.pool.acquire() as conn:
             conn: aiomysql.Connection

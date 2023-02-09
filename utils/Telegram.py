@@ -7,15 +7,16 @@ from pyrogram import Client
 from pyrogram.enums import ParseMode
 from pyrogram.errors import MessageIdInvalid
 from pyrogram.types import InlineKeyboardMarkup, CallbackQuery, Message
-from utils.MySQL import PollNotFound
+from utils import Utils
+from utils import PoolNotFound, MySQLClient
 
 
 class TelegramClient(Client):
     def __init__(self, mysql, utils) -> None:
         # LOADS SETTINGS, DATABASE AND SETS VARIABLES
-        self.settings = json.loads(open("settings.json", encoding="UTF-8").read())
-        self.mysql = mysql
-        self.utils = utils
+        self.settings: dict = json.loads(open("settings.json", encoding="UTF-8").read())
+        self.mysql: MySQLClient = mysql
+        self.utils: Utils = utils
 
         name: str = self.settings.get("telegram", {}).get("name", "123")
         api_id: str = self.settings.get("telegram", {}).get("api_id", 123)
@@ -69,14 +70,14 @@ class TelegramClient(Client):
         else:
             self.last_message[update.from_user.id] = update
 
-    async def get_unique_id(self, user_id: int):
+    async def get_unique_id(self, user_id: int) -> int:
         """
         Get user by user_id
         :param user_id: User ID
         :return: User
         """
         if not self.mysql.pool:
-            raise PollNotFound("Pool not found")
+            raise PoolNotFound("Pool not found")
 
         return await self.mysql.exec("SELECT id FROM users WHERE user_id = %s", user_id)
 
