@@ -11,7 +11,10 @@ from pyrate_limiter import (BucketFullException, Duration, Limiter,
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, Message
 
-users = TTLCache(maxsize=128, ttl=60)
+users: TTLCache = TTLCache(maxsize=128, ttl=60)
+blacklist: dict = {}
+warns: dict = {}
+seconds_to_blacklist: int = 10
 
 
 class RateLimiter:
@@ -22,9 +25,9 @@ class RateLimiter:
 
     def __init__(self) -> None:
         # 1 requests per seconds
-        self.second_rate = RequestRate(2, Duration.SECOND)
+        self.second_rate: RequestRate = RequestRate(1, Duration.SECOND)
 
-        self.limiter = Limiter(
+        self.limiter: Limiter = Limiter(
             self.second_rate,
             bucket_class=MemoryListBucket,
         )
@@ -42,10 +45,7 @@ class RateLimiter:
         return True
 
 
-ratelimiter = RateLimiter()
-blacklist = {}
-warns = {}
-seconds_to_blacklist = 10
+ratelimiter: RateLimiter = RateLimiter()
 
 
 def AntiSpam(func: Callable) -> Callable:
@@ -64,22 +64,21 @@ def AntiSpam(func: Callable) -> Callable:
             if (datetime.now() - blacklist[user_id]).seconds >= seconds_to_blacklist:
                 blacklist.pop(user_id)
                 warns.pop(user_id)
-
             else:
                 return
 
         if is_limited:
             if user_id not in users:
                 if isinstance(update, Message):
-                    msg = await update.reply_text(
+                    msg: Message = await update.reply_text(
                         "⚠️ | Please slow down with your actions. Consider how your actions might be difficult to process if sent continuously. Thank you for your cooperation.")
                     await asyncio.sleep(3)
                     await msg.delete()
-                    users[user_id] = 1
+                    users[user_id]: int = 1
                     return
 
                 elif isinstance(update, CallbackQuery):
-                    users[user_id] = 1
+                    users[user_id]: int = 1
                     return await update.answer("Heyy relax, breathe. Don't perform too many actions at once!",
                                                show_alert=True)
 
