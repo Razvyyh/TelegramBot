@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://razvyyh.com">
-    <img src="https://i.imgur.com/t2FdIjx.png" alt="Telegram Bot">
+    <img src="https://imgur.com/UNBuKco.png" alt="Telegram Bot">
   </a>
 </div>
 
