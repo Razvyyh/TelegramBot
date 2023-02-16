@@ -18,9 +18,9 @@ This is a simple and intuitive bot for Telegram made with the use of Pyrogram, a
 
 ## 🎯〢 Future features
 
-- Ability to send private messages to a specific user in groups.
+- ~~Ability to send private messages to a specific user in groups.~~
 - Weather & news information.
-- Chat to speak with Bot owner.
+- Chat to talk with Bot owner.
 - Docker support.
 - Logs and more!
 
