@@ -1,7 +1,11 @@
+import asyncio
 import json
 import os
+import zipfile
 
 from io import BytesIO
+
+import aiofiles as aiofiles
 from cryptography.fernet import Fernet
 
 
@@ -9,7 +13,8 @@ class Utils:
     def __init__(self, version: str):
         self.version: str = version
 
-    def initialize(self) -> None:
+    @staticmethod
+    def initialize() -> None:
         """
         Check if settings.json exists if it does not exist it
         creates it create settings.json file.
@@ -40,7 +45,18 @@ class Utils:
                     }
                 }, indent=4))
 
-    async def generate_password(self, length: int = 16, special_chars: bool = False) -> str:
+    @staticmethod
+    async def save_settings(settings: dict) -> None:
+        """
+        Save settings.json
+        :param settings:
+        :return:
+        """
+        async with aiofiles.open('settings.json', 'w') as f:
+            await f.write(json.dumps(settings, indent=4))
+
+    @staticmethod
+    async def generate_password(length: int = 16, special_chars: bool = False) -> str:
         """
         Generate a random password
         :param length:
@@ -55,7 +71,8 @@ class Utils:
             alphabet += string.punctuation
         return ''.join(secrets.choice(alphabet) for _ in range(length))
 
-    async def encrypt_file(self, key: str, memory_file: BytesIO) -> BytesIO:
+    @staticmethod
+    async def encrypt_file(key: str, memory_file: BytesIO) -> BytesIO:
         """
         Cripta un file
         :param key:
@@ -68,7 +85,8 @@ class Utils:
         memory_file.close()
         return BytesIO(file_encrypted)
 
-    async def decrypt_file(self, key: str, memory_file: BytesIO) -> BytesIO:
+    @staticmethod
+    async def decrypt_file(key: str, memory_file: BytesIO) -> BytesIO:
         """
         Decripta un file
         :param key:
@@ -80,3 +98,13 @@ class Utils:
         file_decrypted: bytes = fernet.decrypt(memory_file.read())
         memory_file.close()
         return BytesIO(file_decrypted)
+
+    @staticmethod
+    async def zip_folder(folder_path: str, zip_path: str = "archive.zip") -> None:
+        loop = asyncio.get_event_loop()
+
+        with zipfile.ZipFile(zip_path, "w") as my_zip:
+            for folder_name, sub_folders, filenames in os.walk(folder_path):
+                for filename in filenames:
+                    file_path = os.path.join(folder_name, filename)
+                    await loop.run_in_executor(None, my_zip.write, file_path)
