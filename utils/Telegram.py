@@ -70,6 +70,18 @@ class TelegramClient(Client):
         else:
             self.last_message[update.from_user.id] = update
 
+    async def wait_input(self, user_id: int, type: str) -> None:
+        """
+        Wait input
+        :param user_id:
+        :param type:
+        :return:
+        """
+        if type not in self.waits:
+            raise Exception("Invalid type")
+
+        self.waits[type].append(user_id)
+
     async def get_unique_id(self, user_id: int) -> int:
         """
         Get user by user_id
