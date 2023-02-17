@@ -1,0 +1,8 @@
+pyrogram
+tgcrypto
+aiomysql
+psutil
+aiofiles
+cachetools
+pyrate_limiter
+cryptography
