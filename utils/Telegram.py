@@ -1,5 +1,7 @@
 import contextlib
 import json
+from logging import Logger
+
 import pyrogram
 
 from typing import Union
@@ -12,11 +14,12 @@ from utils import PoolNotFound, MySQLClient
 
 
 class TelegramClient(Client):
-    def __init__(self, mysql, utils) -> None:
+    def __init__(self, logs: Logger, mysql: MySQLClient, utils: Utils) -> None:
         # LOADS SETTINGS, DATABASE AND SETS VARIABLES
         self.settings: dict = json.loads(open("settings.json", encoding="UTF-8").read())
         self.mysql: MySQLClient = mysql
         self.utils: Utils = utils
+        self.log = logs
 
         name: str = self.settings.get("telegram", {}).get("name", "123")
         api_id: str = self.settings.get("telegram", {}).get("api_id", 123)

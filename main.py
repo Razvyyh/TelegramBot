@@ -1,5 +1,7 @@
 import asyncio
+import logging
 
+import coloredlogs
 import pyrogram
 
 from utils import TelegramClient, Utils, MySQLClient
@@ -7,11 +9,14 @@ from utils import TelegramClient, Utils, MySQLClient
 
 class Main:
     def __init__(self):
+        self.log = logging.getLogger('bot')
         self.utils: Utils = Utils(version="1.0.0")
         self.utils.initialize()
 
-        self.mysql: MySQLClient = MySQLClient()
-        self.telegram: TelegramClient = TelegramClient(mysql=self.mysql, utils=self.utils)
+        coloredlogs.install(fmt="[%(asctime)s] %(message)s", datefmt="%I:%M:%S", logger=self.log)
+
+        self.mysql: MySQLClient = MySQLClient(logs=self.log)
+        self.telegram: TelegramClient = TelegramClient(logs=self.log, mysql=self.mysql, utils=self.utils)
 
     async def run(self):
         """
@@ -21,11 +26,11 @@ class Main:
         await self.telegram.start()
 
         app = await self.telegram.get_me()
-        print(f"[+] Bot logged as {app.first_name} ({app.id})")
-        print("[+] Bot successfully started")
+        self.log.info(f"[+] Bot logged as {app.first_name} ({app.id})")
+        self.log.info("[+] Bot successfully started")
         # uvloop.install()
         await pyrogram.idle()
-        print("[+] Bot successfully stopped")
+        self.log.info("[+] Bot successfully stopped")
         await self.telegram.stop()
 
 

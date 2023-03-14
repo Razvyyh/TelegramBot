@@ -1,4 +1,5 @@
 import json
+from logging import Logger
 
 import aiomysql
 import pymysql
@@ -11,8 +12,9 @@ class PoolNotFound(Exception):
 
 
 class MySQLClient:
-    def __init__(self):
+    def __init__(self, logs: Logger):
         self.settings: dict = json.loads(open("settings.json", encoding="UTF-8").read())
+        self.log: Logger = logs
 
         self.host: str = self.settings.get("mysql", {}).get("host", "0.0.0.0")
         self.port: int = self.settings.get("mysql", {}).get("port", 3306)
@@ -34,7 +36,7 @@ class MySQLClient:
                 autocommit=True
             )
             await self.start()
-            print("[+] MySQL pool successfully created")
+            self.log.info("[+] MySQL pool successfully created")
         except KeyboardInterrupt as e:
             raise KeyboardInterrupt() from e
 
@@ -46,12 +48,12 @@ class MySQLClient:
         if 'users' not in tables:
             await self.exec(
                 """CREATE TABLE IF NOT EXISTS users(
-                    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-                    user_id BIGINT NOT NULL,
+                    id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
+                    user_id BIGINT UNIQUE NOT NULL,
                     private_key VARCHAR(255) DEFAULT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """)
-            print("[+] Table 'users' successfully created")
+            self.log.info("[+] Table 'users' successfully created")
 
     async def check_user(self, user_id: int):
         """
@@ -114,4 +116,4 @@ class MySQLClient:
                     else:
                         await conn.commit()
                 except pymysql.err.ProgrammingError as e:
-                    print(e, query)
+                    self.log.info(e, query)
