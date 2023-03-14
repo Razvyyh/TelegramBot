@@ -3,6 +3,7 @@ from io import BytesIO
 from cryptography.fernet import Fernet, InvalidToken
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message
+
 from utils import TelegramClient, AntiSpam
 
 
@@ -14,19 +15,19 @@ async def protector(self: TelegramClient, query: CallbackQuery):
 
     buttons: list = [
         [
-            InlineKeyboardButton("🔐 Encrypt", callback_data="protector.encrypt"),
-            InlineKeyboardButton("🔓 Decrypt", callback_data="protector.decrypt")
+            InlineKeyboardButton(text="🔐 Encrypt", callback_data="protector.encrypt"),
+            InlineKeyboardButton(text="🔓 Decrypt", callback_data="protector.decrypt")
         ],
         [
-            InlineKeyboardButton("🔑 My key", callback_data="protector.my_key")
+            InlineKeyboardButton(text="🔑 My key", callback_data="protector.my_key")
         ],
         [
-            InlineKeyboardButton("🔙 Back", callback_data="start")
+            InlineKeyboardButton(text="🔙 Back", callback_data="start")
         ]
     ]
 
     await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons), disable_web_page_preview=True)
-    await self.update_last_message(query)
+    await self.update_last_message(update=query)
 
     if user_id in self.waits["encrypt_file"]: self.waits["encrypt_file"].remove(user_id)
     if user_id in self.waits["decrypt_file"]: self.waits["decrypt_file"].remove(user_id)
@@ -45,7 +46,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
         text: str = f"<b>🏘 Home » 🛡 Protector » 🔐 Encrypt</b>\n\nSend me the file you want to encrypt"
         buttons: list = [
             [
-                InlineKeyboardButton("🔙 Back", callback_data="protector")
+                InlineKeyboardButton(text="🔙 Back", callback_data="protector")
             ]
         ]
         self.waits["encrypt_file"].append(user_id)
@@ -54,7 +55,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
         text: str = f"<b>🏘 Home » 🛡 Protector » 🔓 Decrypt</b>\n\nSend me the file you want to decrypt"
         buttons: list = [
             [
-                InlineKeyboardButton("🔙 Back", callback_data="protector")
+                InlineKeyboardButton(text="🔙 Back", callback_data="protector")
             ]
         ]
         self.waits["decrypt_file"].append(user_id)
@@ -64,11 +65,11 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
         text: str = f"<b>🏘 Home » 🛡 Protector » 🔑 My key</b>\n\n • Private key: {key}\n\nGenerate a key or use your own key!"
         buttons: list = [
             [
-                InlineKeyboardButton("🔄 Generate", callback_data="protector.generate"),
-                InlineKeyboardButton("🔑 Use my key", callback_data="protector.use_my_key")
+                InlineKeyboardButton(text="🔄 Generate", callback_data="protector.generate"),
+                InlineKeyboardButton(text="🔑 Use my key", callback_data="protector.use_my_key")
             ],
             [
-                InlineKeyboardButton("🔙 Back", callback_data="protector")
+                InlineKeyboardButton(text="🔙 Back", callback_data="protector")
             ]
         ]
 
@@ -84,7 +85,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
         text: str = f"<b>🏘 Home » 🛡 Protector » 🔑 My key</b>\n\nSend me your private key"
         buttons: list = [
             [
-                InlineKeyboardButton("🔙 Back", callback_data="protector.my_key")
+                InlineKeyboardButton(text="🔙 Back", callback_data="protector.my_key")
             ]
         ]
         self.waits["private_key"].append(user_id)
@@ -93,7 +94,7 @@ async def protector_data(self: TelegramClient, query: CallbackQuery):
         return await query.answer("❗️ | You must first set your private key!", show_alert=True)
 
     await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons), disable_web_page_preview=True)
-    await self.update_last_message(query)
+    await self.update_last_message(update=query)
 
 
 @Client.on_message(filters.private, group=10)
@@ -106,11 +107,11 @@ async def wait_private_key(self: TelegramClient, message: Message):
 
         buttons: list = [
             [
-                InlineKeyboardButton("🔄 Generate", callback_data="protector.generate"),
-                InlineKeyboardButton("🔑 Use my key", callback_data="protector.use_my_key")
+                InlineKeyboardButton(text="🔄 Generate", callback_data="protector.generate"),
+                InlineKeyboardButton(text="🔑 Use my key", callback_data="protector.use_my_key")
             ],
             [
-                InlineKeyboardButton("🔙 Back", callback_data="protector")
+                InlineKeyboardButton(text="🔙 Back", callback_data="protector")
             ]
         ]
 
@@ -139,7 +140,7 @@ async def wait_private_key(self: TelegramClient, message: Message):
                 text="<b>🏘 Home » 🛡 Protector » 🔐 Encrypt</b>\n\n❗️ | The file is too large or invalid!",
                 buttons=[
                     [
-                        InlineKeyboardButton("🔙 Back", callback_data="protector")
+                        InlineKeyboardButton(text="🔙 Back", callback_data="protector")
                     ]
                 ]
             )
@@ -165,7 +166,7 @@ async def wait_private_key(self: TelegramClient, message: Message):
                 text="<b>🏘 Home » 🛡 Protector » ❗️ Decrypt</b>\n\nThe file you sent has not been encrypted by this bot!",
                 buttons=[
                     [
-                        InlineKeyboardButton("🔄 Retry", callback_data="protector.decrypt")
+                        InlineKeyboardButton(text="🔄 Retry", callback_data="protector.decrypt")
                     ]
                 ]
             )
@@ -175,7 +176,7 @@ async def wait_private_key(self: TelegramClient, message: Message):
                 text="<b>🏘 Home » 🛡 Protector » ❗️ Decrypt</b>\n\n❗️ | The file is too large or invalid!",
                 buttons=[
                     [
-                        InlineKeyboardButton("🔙 Back", callback_data="protector")
+                        InlineKeyboardButton(text="🔙 Back", callback_data="protector")
                     ]
                 ]
             )

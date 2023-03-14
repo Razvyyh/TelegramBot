@@ -1,6 +1,8 @@
 from typing import Union
+
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+
 from utils import TelegramClient
 
 
@@ -12,11 +14,11 @@ async def start(self: TelegramClient, update: Union[Message, CallbackQuery]):
 
     buttons: list = [
         [
-            InlineKeyboardButton("🛡 Protector", callback_data="protector"),
-            InlineKeyboardButton("📊 Server stats", callback_data="server_status")
+            InlineKeyboardButton(text="🛡 Protector", callback_data="protector"),
+            InlineKeyboardButton(text="📊 Server stats", callback_data="server_status")
         ],
         [
-            InlineKeyboardButton("👨‍💻 Developer", url="https://t.me/razvyyh")
+            InlineKeyboardButton(text="👨‍💻 Developer", url="https://t.me/razvyyh")
         ]
     ]
 

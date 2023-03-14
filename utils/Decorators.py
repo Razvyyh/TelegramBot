@@ -1,14 +1,13 @@
 import asyncio
 import contextlib
-
 from datetime import datetime
 from functools import wraps
 from typing import Callable
 from typing import Union
+
 from cachetools import TTLCache
 from pyrate_limiter import (BucketFullException, Duration, Limiter,
                             MemoryListBucket, RequestRate)
-
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, Message
 
@@ -51,7 +50,13 @@ ratelimiter: RateLimiter = RateLimiter()
 
 def AntiSpam(func: Callable) -> Callable:
     """
-    Decorator to limit user's from spamming commands or pressing buttons multiple times
+    Decorator that applies a rate limit to calls to an asynchronous function.
+
+    If a call arrives before the rate limit, a warning message is sent to the user
+    and the call is not executed.
+
+    If the user exceeds the maximum number of alerts allowed, the user is blacklisted
+    for a certain period of time.
     :param func:
     :return:
     """
@@ -72,7 +77,8 @@ def AntiSpam(func: Callable) -> Callable:
             if user_id not in users:
                 if isinstance(update, Message):
                     msg: Message = await update.reply_text(
-                        "⚠️ | Please slow down with your actions. Consider how your actions might be difficult to process if sent continuously. Thank you for your cooperation.")
+                        "⚠️ | Please slow down with your actions. Consider how your actions might be difficult to "
+                        "process if sent continuously. Thank you for your cooperation.")
                     await asyncio.sleep(3)
                     await msg.delete()
                     users[user_id]: int = 1
@@ -88,7 +94,9 @@ def AntiSpam(func: Callable) -> Callable:
                 if user_id not in warns:
                     warns.update({user_id: 1})
                     return await update.answer(
-                        f"⚠️ | Warn ({warns[user_id]})\n\nPlease take a moment to breathe and slow down with your actions. Consider how your actions might be difficult to process if sent continuously. Thank you for your cooperation.",
+                        f"⚠️ | Warn ({warns[user_id]})\n\nPlease take a moment to breathe and slow down with your "
+                        f"actions. Consider how your actions might be difficult to process if sent continuously. "
+                        f"Thank you for your cooperation.",
                         show_alert=True)
                 else:
                     warns[user_id] += 1
@@ -99,7 +107,9 @@ def AntiSpam(func: Callable) -> Callable:
                             show_alert=True)
                     else:
                         return await update.answer(
-                            f"⚠️ | Warn ({warns[user_id]})\n\nPlease take a moment to breathe and slow down with your actions. Consider how your actions might be difficult to process if sent continuously. Thank you for your cooperation.",
+                            f"⚠️ | Warn ({warns[user_id]})\n\nPlease take a moment to breathe and slow down with your "
+                            f"actions. Consider how your actions might be difficult to process if sent continuously. "
+                            f"Thank you for your cooperation.",
                             show_alert=True)
         return await func(client, update)
 

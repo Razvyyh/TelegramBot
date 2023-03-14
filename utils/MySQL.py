@@ -2,7 +2,6 @@ import json
 
 import aiomysql
 import pymysql
-
 from aiomysql import Pool
 
 

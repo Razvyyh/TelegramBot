@@ -1,10 +1,11 @@
 import asyncio
 import datetime
 import time
-import psutil
 
+import psutil
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+
 from utils import TelegramClient, AntiSpam
 
 
@@ -22,16 +23,15 @@ async def server_status(self: TelegramClient, query: CallbackQuery):
     uptime: str = str(datetime.timedelta(seconds=round(time.time() - psutil.boot_time())))
 
     text: str = f"<b>🏘 Home » 📊 Server stats</b>\n\n • CPU: {cpu_usage}\n • RAM: {ram_usage}\n • Disk: {disk_usage}\n • Tasks: {tasks}\n • Load average: {load_avg}\n • Uptime: {uptime}\n\n<i>To update the stats you need to click the below button</i>"
-    user_id: int = query.from_user.id
 
     buttons: list = [
         [
-            InlineKeyboardButton("🔄 Update", callback_data="server_status")
+            InlineKeyboardButton(text="🔄 Update", callback_data="server_status")
         ],
         [
-            InlineKeyboardButton("🔙 Back", callback_data="start")
+            InlineKeyboardButton(text="🔙 Back", callback_data="start")
         ]
     ]
 
     await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup(buttons), disable_web_page_preview=True)
-    await self.update_last_message(query)
+    await self.update_last_message(update=query)

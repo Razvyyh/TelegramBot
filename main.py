@@ -1,4 +1,5 @@
 import asyncio
+
 import pyrogram
 
 from utils import TelegramClient, Utils, MySQLClient
@@ -6,11 +7,11 @@ from utils import TelegramClient, Utils, MySQLClient
 
 class Main:
     def __init__(self):
-        self.utils = Utils(version="1.0.0")
+        self.utils: Utils = Utils(version="1.0.0")
         self.utils.initialize()
 
-        self.mysql = MySQLClient()
-        self.telegram = TelegramClient(mysql=self.mysql, utils=self.utils)
+        self.mysql: MySQLClient = MySQLClient()
+        self.telegram: TelegramClient = TelegramClient(mysql=self.mysql, utils=self.utils)
 
     async def run(self):
         """
